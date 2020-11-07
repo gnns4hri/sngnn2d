@@ -1,0 +1,1 @@
+docker run -ti --rm -e DISPLAY=$DISPLAY  -v /tmp/.X11-unix/:/tmp/.X11-unix -v $HOME:$HOME --security-opt apparmor=unconfined  -e NVIDIA_DRIVER_CAPABILITIES=compute,utility -e NVIDIA_VISIBLE_DEVICES=all --gpus all --privileged --device /dev/dri gnns4hri/sngnn2d:test python3 test.py
