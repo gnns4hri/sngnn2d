@@ -1,0 +1,23 @@
+CommonBehavior.Endpoints=tcp -p 20000
+
+
+# Endpoints for subscriptions
+ObjectDetectorTopic.Endpoints=tcp -p 0
+PeopleDetectorTopic.Endpoints=tcp -p 0
+SNGNN2DTopic.Endpoints=tcp -p 0
+WallDetectorTopic.Endpoints=tcp -p 0
+GoalPublisherTopic.Endpoints=tcp -p 0
+
+
+# Proxies for required interfaces
+OmniRobotProxy = omnirobot:tcp -h localhost -p 10000
+
+
+# This property is used by the clients to connect to IceStorm.
+TopicManager.Proxy=IceStorm/TopicManager:default -p 9999
+
+InnerModelPath = innermodel.xml
+
+Ice.Warn.Connections=0
+Ice.Trace.Network=0
+Ice.Trace.Protocol=0

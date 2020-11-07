@@ -1,0 +1,18 @@
+import "OmniRobot.idsl";
+import "ObjectDetector.idsl";
+import "PeopleDetector.idsl";
+import "WallDetector.idsl";
+import "SNGNN2D.idsl";
+import "GoalPublisher.idsl";
+
+Component trajectory
+{
+    Communications
+    {
+        requires OmniRobot;
+        subscribesTo SNGNN2D, ObjectDetector, PeopleDetector, WallDetector, GoalPublisher;
+
+    };
+	language cpp;
+};
+

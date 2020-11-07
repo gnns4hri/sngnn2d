@@ -1,2 +1,2 @@
-# snngn2d
+# SNGNN-2D
 SNGNN-2D
