@@ -40,10 +40,6 @@ def beautify_image(img):
             bad = 255.-v
             red, blue, green = convert(v)
             th = 215.
-            #if bad >= th:
-            #    red = (bad-th)/(255.-th)*255.
-            #else:
-            #    red = 0
             img[row, col, 0] = blue
             img[row, col, 1] = green
             img[row, col, 2] = red
@@ -92,16 +88,13 @@ ts = []
 counter = -1
 count = 0
 
-MSE = 0.
-MSE_div = 1
 
-if len(sys.argv) > 1:
-    path = sys.argv[1] + '/'
-else:
-    path = './'
-    
+device = 'cpu'
+if 'cuda' in sys.argv:
+    device = 'cuda'
+
 while True:
-    sngnn = SNGNN2D(path)
+    sngnn = SNGNN2D('./', device)
     t = os.path.getmtime('SNGNN2D.tch') 
 
     while t == os.path.getmtime('SNGNN2D.tch'):

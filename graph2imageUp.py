@@ -14,29 +14,28 @@ sys.path.append('nets')
 from gat_mcUpscale import GATMC
 from rgcnDGL import RGCN
 
-if torch.cuda.is_available() is True:
-    device = torch.device('cuda')
-else:
-    device = torch.device('cpu')
-
 
 def collate(batch):
+    global dev
     graphs = [batch[0][0]]
     labels = batch[0][1]
     for graph, label in batch[1:]:
         graphs.append(graph)
         labels = torch.cat([labels, label], dim=0)
-    batched_graphs = dgl.batch(graphs).to(torch.device(device))
-    labels.to(torch.device(device))
+    batched_graphs = dgl.batch(graphs).to(dev)
+    labels.to(dev)
 
     return batched_graphs, labels
 
 
 class SNGNN2D(object):
-    def __init__(self, base, device='cpu'):
+    def __init__(self, base, device='cuda'):
         super(SNGNN2D, self).__init__()
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.device2 = torch.device(device)
+        global dev
+        if device == 'cuda':
+            dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        else:
+            dev = torch.device('cpu')
         self.params = pickle.load(open(base+'/SNGNN2D.prms', 'rb'), fix_imports=True)
         # print(self.params)
         if self.params['net'] in [ 'gat' ]:
@@ -84,8 +83,8 @@ class SNGNN2D(object):
             sys.exit(0)
 
 
-        self.GNNmodel.load_state_dict(torch.load(base+'/SNGNN2D.tch', map_location = device))
-        self.GNNmodel.to(self.device)
+        self.GNNmodel.load_state_dict(torch.load(base+'/SNGNN2D.tch', map_location = dev))
+        self.GNNmodel.to(dev)
         self.GNNmodel.eval()
         torch.set_grad_enabled(False)
 
@@ -99,15 +98,15 @@ class SNGNN2D(object):
         for batch, data in enumerate(test_dataloader):
             subgraph, labels = data
             feats = subgraph.ndata['h']
-            feats = feats.to(self.device)
+            feats = feats.to(dev)
             self.GNNmodel.set_g(subgraph)
             if self.params['net'] in [ 'rgcn' ]:
-                logits = self.GNNmodel(feats.float(), subgraph.edata['rel_type'].squeeze().to(self.device))
+                logits = self.GNNmodel(feats.float(), subgraph.edata['rel_type'].squeeze().to(dev))
             else:
                     logits = self.GNNmodel(feats.float())
             # print('l', logits.shape)
-            # logits = (logits[socnavImg.getMaskForBatch(subgraph)].detach().to(self.device2).numpy())*255.
-            logits = (logits[0].detach().to(self.device2).numpy())
+            # logits = (logits[socnavImg.getMaskForBatch(subgraph)].detach().to(self.device).numpy())*255.
+            logits = (logits[0].detach().to(torch.device('cpu')).numpy())
             #print('ppp', logits.shape)
 
 
