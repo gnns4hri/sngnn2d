@@ -529,7 +529,7 @@ void SpecificWorker::follow_path(std::vector<Point> path)
 
 	uint next = 1;
 
-    while (dist<=20 and next<path.size())
+    while (dist<=10 and next<path.size())
 	{
 		next++;
 		vP = path[next]-path[0];
